@@ -1,0 +1,15 @@
+---
+name: "🚀 Feature Request"
+about: Suggest a new feature or improvement
+title: "[Feature] "
+labels: type:feature
+---
+
+### Is your feature request related to a problem?
+A clear and concise description of what the problem is.
+
+### Describe the solution you'd like
+Explain the feature or behavior you'd like to see implemented.
+
+### Additional context
+Add any other context or screenshots about the feature request here.

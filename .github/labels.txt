@@ -1,0 +1,5 @@
+type:bug
+type:feature
+type:refactor
+type:docs
+type:test
