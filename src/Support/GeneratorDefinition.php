@@ -41,6 +41,17 @@ class GeneratorDefinition
 
     public function saveTo(string $path): void
     {
+        @mkdir(dirname($path), recursive: true);
         file_put_contents($path, json_encode($this->toArray(), JSON_PRETTY_PRINT));
+    }
+
+    public static function pathFor(string $type): string
+    {
+        return base_path("custom-makes/{$type}.json");
+    }
+
+    public static function stubFor(string $type): string
+    {
+        return base_path("stubs/custom/{$type}.stub");
     }
 }
