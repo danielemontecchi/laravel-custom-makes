@@ -2,6 +2,7 @@
 
 namespace DanieleMontecchi\CustomMakes;
 
+use DanieleMontecchi\CustomMakes\Console\CreateMakeCommand;
 use Illuminate\Support\ServiceProvider;
 
 class CustomMakesServiceProvider extends ServiceProvider
@@ -13,6 +14,10 @@ class CustomMakesServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Register commands, config, stub publishing, etc.
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                CreateMakeCommand::class,
+            ]);
+        }
     }
 }
