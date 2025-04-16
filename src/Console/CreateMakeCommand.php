@@ -9,14 +9,14 @@ use Illuminate\Support\Str;
 class CreateMakeCommand extends Command
 {
     protected $signature = 'create:make
-                            {name? : The name, in lowercase, of the generator (e.g. services)}
+                            {name? : The name of the generator (e.g. services)}
                             {--json : Also generate a definition JSON file}';
 
     protected $description = 'Create a new custom make command stub, with optional JSON definition.';
 
     public function handle(): int
     {
-        $commandName = Str::lower($this->argument('name') ?? $this->ask('Enter the command name (e.g. services)'));
+        $commandName = $this->argument('name') ?? $this->ask('Enter the command name (e.g. services)');
 
         if (Str::plural($commandName) !== $commandName) {
             if (!$this->confirm("It's recommended to use a plural form for the generator name. Do you want to continue anyway?")) {
@@ -34,13 +34,11 @@ class CreateMakeCommand extends Command
 
         $namespace = $this->ask('What is the default namespace?', $defaultNamespace);
 
-        $stubPath = GeneratorDefinition::pathStub($commandName);
-
+        $stubPath = GeneratorDefinition::stubFor($commandName);
         $this->generateDefaultStub($stubPath, $namespace);
-
         $this->components->twoColumnDetail('✔ Stub created', str_replace(base_path() . '/', '', $stubPath));
 
-        if ($this->option('json')) {
+        if ($this->option('json') || config('custom-makes.always_generate_json', false)) {
             $definition = new GeneratorDefinition(
                 $commandName,
                 '{{ name }}',
@@ -50,11 +48,8 @@ class CreateMakeCommand extends Command
                 ['name', 'namespace', 'class']
             );
 
-            $jsonPath = GeneratorDefinition::pathJson($commandName);
-
-            $definition->saveTo($jsonPath);
-
-            $this->components->twoColumnDetail('✔ Generator definition', str_replace(base_path() . '/', '', $jsonPath));
+            $definition->saveTo(GeneratorDefinition::pathFor($commandName));
+            $this->components->twoColumnDetail('✔ Generator definition', str_replace(base_path() . '/', '', GeneratorDefinition::pathFor($commandName)));
         }
 
         $this->components->info('Custom generator created successfully.');

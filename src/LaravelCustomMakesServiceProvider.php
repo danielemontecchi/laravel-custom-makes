@@ -11,7 +11,7 @@ class LaravelCustomMakesServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Optional: merge config
+        $this->mergeConfigFrom(__DIR__ . '/../config/laravel-custom-makes.php', 'laravel-custom-makes');
     }
 
     public function boot(): void
@@ -23,5 +23,9 @@ class LaravelCustomMakesServiceProvider extends ServiceProvider
                 MakeCustomCommand::class,
             ]);
         }
+
+        $this->publishes([
+            __DIR__ . '/../config/laravel-custom-makes.php' => config_path('laravel-custom-makes.php'),
+        ], 'laravel-custom-makes-config');
     }
 }

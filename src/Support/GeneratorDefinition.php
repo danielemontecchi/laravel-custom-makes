@@ -2,8 +2,6 @@
 
 namespace DanieleMontecchi\LaravelCustomMakes\Support;
 
-use Illuminate\Support\Str;
-
 class GeneratorDefinition
 {
     public function __construct(
@@ -12,10 +10,8 @@ class GeneratorDefinition
         public string $stubPath,
         public string $outputPath,
         public string $namespace,
-        public array  $variables = []
-    )
-    {
-    }
+        public array $variables = [],
+    ) {}
 
     public static function fromArray(array $data): self
     {
@@ -47,21 +43,17 @@ class GeneratorDefinition
         file_put_contents($path, json_encode($this->toArray(), JSON_PRETTY_PRINT));
     }
 
-    public static function pathJson(string|null $type): string
+    public static function pathFor(string|null $type): string
     {
-        $typeFile = (!empty($type))
-            ? Str::pascal($type) . '.json'
-            : '';
-
-        return base_path("custom-makes/definitions/{$typeFile}");
+        $definitionsPath = config('laravel-custom-makes.definitions_path', 'custom-makes/definitions');
+        $typeFile = $type ? \Illuminate\Support\Str::pascal($type) . '.json' : '';
+        return base_path("{$definitionsPath}/{$typeFile}");
     }
 
-    public static function pathStub(string|null $type): string
+    public static function stubFor(string|null $type): string
     {
-        $typeFile = (!empty($type))
-            ? Str::pascal($type) . '.stub'
-            : '';
-
-        return base_path("custom-makes/stubs/{$typeFile}");
+        $stubsPath = config('laravel-custom-makes.stubs_path', 'custom-makes/stubs');
+        $typeFile = $type ? \Illuminate\Support\Str::pascal($type) . '.stub' : '';
+        return base_path("{$stubsPath}/{$typeFile}");
     }
 }
