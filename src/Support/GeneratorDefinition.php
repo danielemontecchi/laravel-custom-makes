@@ -1,6 +1,8 @@
 <?php
 
-namespace DanieleMontecchi\CustomMakes\Support;
+namespace DanieleMontecchi\LaravelCustomMakes\Support;
+
+use Illuminate\Support\Str;
 
 class GeneratorDefinition
 {
@@ -45,13 +47,21 @@ class GeneratorDefinition
         file_put_contents($path, json_encode($this->toArray(), JSON_PRETTY_PRINT));
     }
 
-    public static function pathFor(string $type): string
+    public static function pathJson(string|null $type): string
     {
-        return base_path("custom-makes/{$type}.json");
+        $typeFile = (!empty($type))
+            ? Str::pascal($type) . '.json'
+            : '';
+
+        return base_path("custom-makes/definitions/{$typeFile}");
     }
 
-    public static function stubFor(string $type): string
+    public static function pathStub(string|null $type): string
     {
-        return base_path("stubs/custom/{$type}.stub");
+        $typeFile = (!empty($type))
+            ? Str::pascal($type) . '.stub'
+            : '';
+
+        return base_path("custom-makes/stubs/{$typeFile}");
     }
 }

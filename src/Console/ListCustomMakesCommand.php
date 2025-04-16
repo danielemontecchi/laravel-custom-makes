@@ -1,49 +1,56 @@
 <?php
 
-namespace DanieleMontecchi\CustomMakes\Console;
+namespace DanieleMontecchi\LaravelCustomMakes\Console;
 
-use DanieleMontecchi\CustomMakes\Support\GeneratorDefinition;
+use DanieleMontecchi\LaravelCustomMakes\Support\GeneratorDefinition;
 use Illuminate\Console\Command;
 
-class ListCustomMakesCommand extends Command
+class ListLaravelCustomMakesCommand extends Command
 {
-    protected $signature = 'list:custom-makes';
-    protected $description = 'List all available custom generators';
+    protected $signature = 'list:custom-makes
+                            {--json : Show only generators that have a JSON definition}';
+
+    protected $description = 'List all available custom generators based on stub files';
 
     public function handle(): int
     {
-        $directory = base_path('custom-makes');
+        $stubDir = GeneratorDefinition::pathStub();
+        $jsonDir = GeneratorDefinition::pathJson();
 
-        if (!is_dir($directory)) {
+        if (!is_dir($stubDir)) {
             $this->components->warn('No custom generators found.');
             return self::SUCCESS;
         }
 
-        $files = glob($directory . '/*.json');
-
-        if (empty($files)) {
+        $stubFiles = glob($stubDir . '/*.stub');
+        if (empty($stubFiles)) {
             $this->components->warn('No custom generators found.');
             return self::SUCCESS;
         }
+
+        $onlyJson = $this->option('json');
 
         $this->components->info('📦 Available custom generators:');
         $this->newLine();
 
-        foreach ($files as $file) {
-            $key = basename($file, '.json');
+        $shown = 0;
 
-            try {
-                $definition = GeneratorDefinition::fromArray(
-                    json_decode(file_get_contents($file), true)
-                );
+        foreach ($stubFiles as $file) {
+            $name = basename($file, '.stub');
+            $jsonPath = $jsonDir . '/' . $name . '.json';
+            $hasJson = file_exists($jsonPath);
 
-                $this->components->twoColumnDetail(
-                    '✔ ' . str_pad($key, 15),
-                    "{$definition->command}  ({$definition->outputPath})"
-                );
-            } catch (\Throwable $e) {
-                $this->components->error("✘ Failed to read: {$key}.json");
+            if ($onlyJson && !$hasJson) {
+                continue;
             }
+
+            $info = $hasJson ? 'stub + json' : 'stub only';
+            $this->components->twoColumnDetail("✔ " . str_pad($name, 15), $info);
+            $shown++;
+        }
+
+        if ($shown === 0) {
+            $this->components->warn($onlyJson ? 'No generators with JSON found.' : 'No generators found.');
         }
 
         return self::SUCCESS;

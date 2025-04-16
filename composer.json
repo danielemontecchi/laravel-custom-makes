@@ -16,13 +16,13 @@
   },
   "autoload": {
     "psr-4": {
-      "DanieleMontecchi\\CustomMakes\\": "src/"
+      "DanieleMontecchi\\LaravelCustomMakes\\": "src/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "DanieleMontecchi\\CustomMakes\\CustomMakesServiceProvider"
+        "DanieleMontecchi\\LaravelCustomMakes\\LaravelCustomMakesServiceProvider"
       ]
     }
   },
