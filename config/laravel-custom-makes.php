@@ -37,4 +37,15 @@ return [
     */
     'always_generate_json' => false,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Enable fallback to Laravel native stubs
+    |--------------------------------------------------------------------------
+    |
+    | If true, the generator will fallback to Laravel's default stub files
+    | (e.g. stubs/class.stub) when a custom stub is not found.
+    |
+    */
+    'allow_laravel_stub_fallback' => true,
+
 ];
