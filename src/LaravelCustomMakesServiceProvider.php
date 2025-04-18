@@ -2,9 +2,8 @@
 
 namespace DanieleMontecchi\LaravelCustomMakes;
 
-use DanieleMontecchi\LaravelCustomMakes\Console\MakesCreateCommand;
 use DanieleMontecchi\LaravelCustomMakes\Console\MakesListCommand;
-use DanieleMontecchi\LaravelCustomMakes\Console\MakesCustomCommand;
+use DanieleMontecchi\LaravelCustomMakes\Console\MakeCustomCommand;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelCustomMakesServiceProvider extends ServiceProvider
@@ -18,9 +17,8 @@ class LaravelCustomMakesServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                MakesCreateCommand::class,
                 MakesListCommand::class,
-                MakesCustomCommand::class,
+                MakeCustomCommand::class,
             ]);
         }
 
