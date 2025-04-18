@@ -5,9 +5,9 @@ namespace DanieleMontecchi\LaravelCustomMakes\Console;
 use DanieleMontecchi\LaravelCustomMakes\Support\GeneratorDefinition;
 use Illuminate\Console\Command;
 
-class ListLaravelCustomMakesCommand extends Command
+class MakesListCommand extends Command
 {
-    protected $signature = 'list:custom-makes
+    protected $signature = 'makes:list
                             {--json : Show only generators that have a JSON definition}';
 
     protected $description = 'List all available custom generators based on stub files';
@@ -15,7 +15,7 @@ class ListLaravelCustomMakesCommand extends Command
     public function handle(): int
     {
         $stubDir = GeneratorDefinition::pathStub();
-        $jsonDir = GeneratorDefinition::pathJson();
+        $jsonDir = GeneratorDefinition::pathDefinition();
 
         if (!is_dir($stubDir)) {
             $this->components->warn('No custom generators found.');

@@ -6,9 +6,9 @@ use DanieleMontecchi\LaravelCustomMakes\Support\GeneratorDefinition;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
-class MakeCustomCommand extends Command
+class MakesCustomCommand extends Command
 {
-    protected $signature = 'make:custom
+    protected $signature = 'makes:custom
                             {type? : The type of generator to use (e.g. services)}
                             {name? : The name of the class to generate}
                             {--force|-f : Overwrite the file if it already exists}';

@@ -6,9 +6,9 @@ use DanieleMontecchi\LaravelCustomMakes\Support\GeneratorDefinition;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
-class CreateMakeCommand extends Command
+class MakesCreateCommand extends Command
 {
-    protected $signature = 'create:make
+    protected $signature = 'makes:create
                             {name? : The name of the generator (e.g. services)}
                             {--json : Also generate a definition JSON file}';
 
@@ -34,7 +34,7 @@ class CreateMakeCommand extends Command
 
         $namespace = $this->ask('What is the default namespace?', $defaultNamespace);
 
-        $stubPath = GeneratorDefinition::stubFor($commandName);
+        $stubPath = GeneratorDefinition::pathStub($commandName);
         $this->generateDefaultStub($stubPath, $namespace);
         $this->components->twoColumnDetail('✔ Stub created', str_replace(base_path() . '/', '', $stubPath));
 
@@ -48,8 +48,8 @@ class CreateMakeCommand extends Command
                 ['name', 'namespace', 'class']
             );
 
-            $definition->saveTo(GeneratorDefinition::pathFor($commandName));
-            $this->components->twoColumnDetail('✔ Generator definition', str_replace(base_path() . '/', '', GeneratorDefinition::pathFor($commandName)));
+            $definition->saveTo(GeneratorDefinition::pathDefinition($commandName));
+            $this->components->twoColumnDetail('✔ Generator definition', str_replace(base_path() . '/', '', GeneratorDefinition::pathDefinition($commandName)));
         }
 
         $this->components->info('Custom generator created successfully.');
