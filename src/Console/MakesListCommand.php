@@ -1,58 +1,79 @@
 <?php
 
-namespace DanieleMontecchi\LaravelCustomMakes\Console;
+namespace DanieleMontecchi\CustomMakes\Console;
 
-use DanieleMontecchi\LaravelCustomMakes\Support\GeneratorDefinition;
 use Illuminate\Console\Command;
+use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
-class MakesListCommand extends Command
+/**
+ * This command lists all custom generator stubs located in the custom-makes/stubs directory.
+ * It excludes stubs that are used by Laravel's native make:* commands.
+ */
+class MakeCustomListCommand extends Command
 {
-    protected $signature = 'makes:list
-                            {--json : Show only generators that have a JSON definition}';
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'make:custom-list';
 
-    protected $description = 'List all available custom generators based on stub files';
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'List all custom generator stubs (excluding Laravel native stubs).';
 
+    /**
+     * Execute the console command.
+     *
+     * @return int
+     */
     public function handle(): int
     {
-        $stubDir = GeneratorDefinition::pathStub();
-        $jsonDir = GeneratorDefinition::pathDefinition();
+        $customStubDir = Str::finish(base_path('stubs'),'/');
+        $allCustomStubs = collect(glob($customStubDir . '*.stub'))->map(fn($path) => realpath($path));
 
-        if (!is_dir($stubDir)) {
-            $this->components->warn('No custom generators found.');
+        if ($allCustomStubs->isEmpty()) {
+            $this->components->info('No custom stubs found in: ' . $customStubDir);
             return self::SUCCESS;
         }
 
-        $stubFiles = glob($stubDir . '/*.stub');
-        if (empty($stubFiles)) {
-            $this->components->warn('No custom generators found.');
+        $laravelStubPaths = $this->getLaravelStubPaths();
+
+        $customOnly = $allCustomStubs->filter(fn($path) => !$laravelStubPaths->contains($path));
+
+        if ($customOnly->isEmpty()) {
+            $this->components->info('No custom stubs found (all match Laravel native stubs).');
             return self::SUCCESS;
         }
 
-        $onlyJson = $this->option('json');
-
-        $this->components->info('📦 Available custom generators:');
-        $this->newLine();
-
-        $shown = 0;
-
-        foreach ($stubFiles as $file) {
-            $name = basename($file, '.stub');
-            $jsonPath = $jsonDir . '/' . $name . '.json';
-            $hasJson = file_exists($jsonPath);
-
-            if ($onlyJson && !$hasJson) {
-                continue;
-            }
-
-            $info = $hasJson ? 'stub + json' : 'stub only';
-            $this->components->twoColumnDetail("✔ " . str_pad($name, 15), $info);
-            $shown++;
-        }
-
-        if ($shown === 0) {
-            $this->components->warn($onlyJson ? 'No generators with JSON found.' : 'No generators found.');
+        $this->components->info('Custom generator stubs found:');
+        foreach ($customOnly as $path) {
+            $type = Str::of(basename($path))->beforeLast('.stub')->kebab();
+            $label = str_pad("  make:custom {$type}", 26); // Align spacing
+            $this->line("{$label} Create a new {$type} class");
         }
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Get all stub paths used by Laravel's native GeneratorCommand classes.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    protected function getLaravelStubPaths(): Collection
+    {
+        return collect(app()->make('Illuminate\Contracts\Console\Kernel')->all())
+            ->filter(fn($cmd, $key) => str_starts_with($key, 'make:') && $cmd instanceof GeneratorCommand)
+            ->map(function ($command) {
+                return method_exists($command, 'getStub') ? realpath($command->getStub()) : null;
+            })
+            ->filter()
+            ->unique();
     }
 }
