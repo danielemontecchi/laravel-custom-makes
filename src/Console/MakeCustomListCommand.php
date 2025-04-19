@@ -1,7 +1,8 @@
 <?php
 
-namespace DanieleMontecchi\CustomMakes\Console;
+namespace DanieleMontecchi\LaravelCustomMakes\Console;
 
+use DanieleMontecchi\LaravelCustomMakes\Support\GeneratorDefinition;
 use Illuminate\Console\Command;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Collection;
@@ -34,7 +35,7 @@ class MakeCustomListCommand extends Command
      */
     public function handle(): int
     {
-        $customStubDir = Str::finish(base_path('stubs'),'/');
+        $customStubDir = Str::finish(base_path('stubs'), '/');
         $allCustomStubs = collect(glob($customStubDir . '*.stub'))->map(fn($path) => realpath($path));
 
         if ($allCustomStubs->isEmpty()) {
@@ -70,9 +71,7 @@ class MakeCustomListCommand extends Command
     {
         return collect(app()->make('Illuminate\Contracts\Console\Kernel')->all())
             ->filter(fn($cmd, $key) => str_starts_with($key, 'make:') && $cmd instanceof GeneratorCommand)
-            ->map(function ($command) {
-                return method_exists($command, 'getStub') ? realpath($command->getStub()) : null;
-            })
+            ->map(fn($command) => GeneratorDefinition::pathStub(Str::remove('make:', $command->getName())) ?? null)
             ->filter()
             ->unique();
     }
