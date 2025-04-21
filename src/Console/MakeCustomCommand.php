@@ -89,9 +89,7 @@ class MakeCustomCommand extends GeneratorCommand
         }
 
         $stubDir = File::dirname($this->stubPath);
-        dump('3) ' . $stubDir);
         if (!File::exists($stubDir)) {
-            dump($stubDir);
             File::makeDirectory($stubDir);
         }
         File::put($this->stubPath, $this->defaultStubTemplate());
