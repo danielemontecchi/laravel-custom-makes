@@ -2,9 +2,10 @@
 
 namespace DanieleMontecchi\LaravelCustomMakes\Console;
 
+use DanieleMontecchi\LaravelCustomMakes\Support\GeneratorDefinition;
+use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Illuminate\Console\GeneratorCommand;
 
 /**
  * Command to generate a new class using a custom stub or create the stub itself.
@@ -46,10 +47,10 @@ class MakeCustomCommand extends GeneratorCommand
     {
         $this->type = Str::pascal($this->argument('type'));
         $this->name = Str::pascal($this->argument('name'));
-        $this->stubPath = $this->resolveStubPath();
+        $this->stubPath = $this->getStub();
 
         return (empty($this->name))
-            ? $this->generateStub()
+            ? $this->createFileStub()
             : parent::handle();
     }
 
@@ -60,7 +61,7 @@ class MakeCustomCommand extends GeneratorCommand
      */
     protected function getStub(): string
     {
-        return $this->stubPath ?? '';
+        return GeneratorDefinition::pathStub($this->type);
     }
 
     /**
@@ -79,16 +80,18 @@ class MakeCustomCommand extends GeneratorCommand
      *
      * @return int
      */
-    protected function generateStub(): int
+    protected function createFileStub(): int
     {
-        $absStubPath = Str::remove(Str::finish(base_path(), '/'), $this->stubPath);
+        $absStubPath = Str::remove(Str::finish(base_path(), '/'), $this->stubPath, false);
         if (File::exists($this->stubPath)) {
             $this->components->error("The stub already exists: {$absStubPath}");
             return self::FAILURE;
         }
 
         $stubDir = File::dirname($this->stubPath);
+        dump('3) ' . $stubDir);
         if (!File::exists($stubDir)) {
+            dump($stubDir);
             File::makeDirectory($stubDir);
         }
         File::put($this->stubPath, $this->defaultStubTemplate());
@@ -113,27 +116,5 @@ class DummyClass
 {
 }
 PHP;
-    }
-
-    /**
-     * Resolve the appropriate stub path for the given type.
-     *
-     * Order of resolution:
-     * - custom-makes/stubs/{Type}.stub
-     * - stubs/{type}.stub
-     * - Laravel's native stub
-     *
-     * @return string
-     */
-    protected function resolveStubPath(): string
-    {
-        $fileName = Str::kebab($this->type) . '.stub';
-        $filePath = base_path("stubs/$fileName");
-        if (File::exists($filePath)) return $filePath;
-
-        $fallback = base_path("vendor/laravel/framework/src/Illuminate/Foundation/Console/stubs/$fileName");
-        return (File::exists($fallback))
-            ? $fallback
-            : $filePath;
     }
 }

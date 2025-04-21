@@ -74,24 +74,6 @@ class GeneratorDefinition
     }
 
     /**
-     * Constructs the file path for a specific type definition.
-     *
-     * @param string $type Optional. The type name to generate the definition file path for.
-     *                      Defaults to an empty string.
-     * @return string Returns the constructed file path for the given type definition
-     *                or the base definitions path if no type is provided.
-     */
-    public static function pathDefinition(string $type = ''): string
-    {
-        $definitionsPath = config('laravel-custom-makes.definitions_path', 'custom-makes/definitions');
-        $typeFile = !empty($type)
-            ? Str::pascal($type) . '.json'
-            : '';
-
-        return base_path("{$definitionsPath}/{$typeFile}");
-    }
-
-    /**
      * Generates the full file path for a specific stub file based on the provided type.
      *
      * @param string $type The type of the stub file. If empty, no specific file will be appended.
@@ -99,11 +81,11 @@ class GeneratorDefinition
      */
     public static function pathStub(string $type = ''): string
     {
-        $stubsPath = config('laravel-custom-makes.stubs_path', 'custom-makes/stubs');
+        $stubsPath = Str::finish(config('laravel-custom-makes.stubs_path', 'stubs'), '/');
         $typeFile = !empty($type)
-            ? Str::pascal($type) . '.stub'
+            ? Str::kebab($type) . '.stub'
             : '';
 
-        return base_path("{$stubsPath}/{$typeFile}");
+        return base_path($stubsPath . $typeFile);
     }
 }
