@@ -81,11 +81,11 @@ class GeneratorDefinition
      */
     public static function pathStub(string $type = ''): string
     {
-        $stubsPath = Str::finish(config('laravel-custom-makes.stubs_path', 'stubs'), '/');
-        $typeFile = !empty($type)
+        $stubFilePath = Str::finish(config('laravel-custom-makes.stubs_path', 'stubs'), '/');
+        $stubFilePath .= !empty($type)
             ? Str::kebab($type) . '.stub'
             : '';
 
-        return base_path($stubsPath . $typeFile);
+        return base_path($stubFilePath);
     }
 }

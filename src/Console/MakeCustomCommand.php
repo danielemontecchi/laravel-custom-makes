@@ -46,12 +46,10 @@ class MakeCustomCommand extends GeneratorCommand
     public function handle(): bool|null
     {
         $this->type = Str::pascal($this->argument('type'));
-        $this->name = Str::pascal($this->argument('name'));
         $this->stubPath = $this->getStub();
+        if (empty($this->name)) $this->createFileStub();
 
-        return (empty($this->name))
-            ? $this->createFileStub()
-            : parent::handle();
+        return parent::handle();
     }
 
     /**
@@ -72,7 +70,7 @@ class MakeCustomCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace): string
     {
-        return $rootNamespace . '\\' . $this->type;
+        return $rootNamespace . '\\' . Str::plural($this->type);
     }
 
     /**
@@ -88,11 +86,18 @@ class MakeCustomCommand extends GeneratorCommand
             return self::FAILURE;
         }
 
+        // Create the directory if it doesn't exist
         $stubDir = File::dirname($this->stubPath);
         if (!File::exists($stubDir)) {
             File::makeDirectory($stubDir);
         }
-        File::put($this->stubPath, $this->defaultStubTemplate());
+
+        // Try to load native Laravel stub if available
+        $nativeStub = base_path("stubs/{$this->type}.stub");
+        $stubContent = (File::exists($nativeStub))
+            ? File::get($nativeStub)
+            : $this->defaultStubTemplate();
+        File::put($this->stubPath, $stubContent);
         $this->components->twoColumnDetail('✔ Stub created', $absStubPath);
 
         return self::SUCCESS;
