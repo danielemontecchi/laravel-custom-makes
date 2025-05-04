@@ -46,10 +46,12 @@ class MakeCustomCommand extends GeneratorCommand
     public function handle(): bool|null
     {
         $this->type = Str::pascal($this->argument('type'));
+        $this->name = $this->argument('name');
         $this->stubPath = $this->getStub();
-        if (empty($this->name)) $this->createFileStub();
 
-        return parent::handle();
+        return (empty($this->name))
+            ? $this->createFileStub()
+            : parent::handle();
     }
 
     /**
@@ -93,7 +95,8 @@ class MakeCustomCommand extends GeneratorCommand
         }
 
         // Try to load native Laravel stub if available
-        $nativeStub = base_path("stubs/{$this->type}.stub");
+        $stubName = Str::kebab($this->type) . '.stub';
+        $nativeStub = base_path("vendor/laravel/framework/src/Illuminate/Foundation/Console/stubs/{$stubName}");
         $stubContent = (File::exists($nativeStub))
             ? File::get($nativeStub)
             : $this->defaultStubTemplate();
@@ -113,9 +116,9 @@ class MakeCustomCommand extends GeneratorCommand
         return <<<PHP
 <?php
 
-namespace DummyNamespace;
+namespace {{ namespace }};
 
-class DummyClass
+class {{ class }}
 {
 }
 PHP;
