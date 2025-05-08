@@ -1,16 +1,26 @@
 {
   "name": "danielemontecchi/laravel-custom-makes",
-  "description": "Create custom make commands in Laravel using a CLI wizard",
+  "description": "Easily create and manage custom make: commands in Laravel using a reusable stub system and a guided CLI wizard.",
   "type": "library",
   "license": "MIT",
   "authors": [
     {
       "name": "Daniele Montecchi",
-      "email": "you@example.com"
+      "email": "daniele@montecchi.me"
     }
   ],
+  "keywords": [
+    "laravel",
+    "artisan",
+    "cli",
+    "make",
+    "commands",
+    "stubs",
+    "generators",
+    "custom"
+  ],
   "require": {
-    "php": "^8.2",
+    "php": "^8.2 || ^8.3 || ^8.4",
     "illuminate/console": "^10.0|^11.0|^12.0",
     "illuminate/support": "^10.0|^11.0|^12.0"
   },
