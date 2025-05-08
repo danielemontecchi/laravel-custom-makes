@@ -3,7 +3,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/danielemontecchi/laravel-custom-makes.svg?style=flat-square)](https://packagist.org/packages/danielemontecchi/laravel-custom-makes)
 [![Total Downloads](https://img.shields.io/packagist/dt/danielemontecchi/laravel-custom-makes.svg?style=flat-square)](https://packagist.org/packages/danielemontecchi/laravel-custom-makes)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/danielemontecchi/laravel-custom-makes/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/danielemontecchi/laravel-custom-makes/actions/workflows/tests.yml)
-[![codecov](https://codecov.io/gh/danielemontecchi/laravel-custom-makes/graph/badge.svg?token=X5OFBJO51M)](https://codecov.io/gh/danielemontecchi/laravel-custom-makes)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=danielemontecchi_laravel-custom-makes&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=danielemontecchi_laravel-custom-makes)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 [![Documentation](https://img.shields.io/badge/docs-available-brightgreen.svg?style=flat-square)](https://danielemontecchi.github.io/laravel-custom-makes)
 
@@ -107,15 +107,13 @@ To run the test suite:
 
 Tests are powered by Pest and Orchestra Testbench.
 
-## 🙌 Contributing
+---
 
-Pull requests are welcome. For major changes, please open an issue first.
+## License
 
-## 📄 License
-
-The MIT License (MIT). See [License File](LICENSE.md) for more information.
+Laravel Custom Makes is open-source software licensed under the **MIT license**.
+See the [LICENSE.md](LICENSE.md) file for full details.
 
 ---
 
-Made with ❤️ by [Daniele Montecchi](https://github.com/danielemontecchi)
-
+Made with ❤️ by [Daniele Montecchi](https://danielemontecchi.com)
