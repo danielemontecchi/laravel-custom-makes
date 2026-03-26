@@ -38,7 +38,7 @@ This will create `config/laravel-custom-makes.php` with the following options:
 To define a new generator stub:
 
 ```bash
-php artisan create:make service
+php artisan make:custom service
 ```
 
 This creates a stub file:

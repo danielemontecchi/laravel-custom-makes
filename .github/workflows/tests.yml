@@ -6,17 +6,24 @@ jobs:
   pest:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3', '8.4']
+        testbench: ['^8.0', '^9.0', '^10.0', '^11.0']
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: ${{ matrix.php }}
           coverage: xdebug
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Install dependencies with testbench ${{ matrix.testbench }}
+        run: |
+          composer require "orchestra/testbench:${{ matrix.testbench }}" --dev --no-interaction --no-update
+          composer update --prefer-dist --no-interaction --no-progress
 
-      - name: Run tests with coverage
-        run: ./vendor/bin/pest --coverage-clover=coverage.xml
+      - name: Run tests
+        run: ./vendor/bin/pest

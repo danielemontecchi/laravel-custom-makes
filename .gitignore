@@ -1,6 +1,7 @@
 /vendor/
 /composer.lock
 /.idea/
+/.claude/
 /.phpunit.result.cache
 /.vscode/
 .DS_Store
@@ -8,3 +9,4 @@
 /.env
 /tests/tmp/
 /coverage/
+*.code-workspace
