@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\File;
 
+const STUB_CLASS_CONTENT = 'class {{ class }} {}';
+
 beforeEach(function () {
     File::deleteDirectory(base_path('stubs'));
 });
@@ -19,7 +21,7 @@ it('reports no custom stubs when the stubs directory is empty', function () {
 
 it('lists only custom stubs excluding Laravel native ones', function () {
     File::ensureDirectoryExists(base_path('stubs'));
-    File::put(base_path('stubs/foo.stub'), 'class {{ class }} {}');
+    File::put(base_path('stubs/foo.stub'), STUB_CLASS_CONTENT);
 
     $exitCode = Artisan::call('make:custom-list');
     $output = Artisan::output();
@@ -31,8 +33,8 @@ it('lists only custom stubs excluding Laravel native ones', function () {
 
 it('lists multiple custom stubs', function () {
     File::ensureDirectoryExists(base_path('stubs'));
-    File::put(base_path('stubs/foo.stub'), 'class {{ class }} {}');
-    File::put(base_path('stubs/bar.stub'), 'class {{ class }} {}');
+    File::put(base_path('stubs/foo.stub'), STUB_CLASS_CONTENT);
+    File::put(base_path('stubs/bar.stub'), STUB_CLASS_CONTENT);
 
     $exitCode = Artisan::call('make:custom-list');
     $output = Artisan::output();
